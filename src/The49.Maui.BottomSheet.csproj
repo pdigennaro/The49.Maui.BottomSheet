@@ -32,6 +32,8 @@
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 		<Version>$(VersionPrefix)$(VersionSuffix)</Version>
 		<Company>The49 Ltd.</Company>
+
+		<MauiVersion>8.0.100</MauiVersion>
 	</PropertyGroup>
 
 
@@ -40,8 +42,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="M.BindableProperty.Generator" PrivateAssets="all" />
-		<PackageReference Include="Microsoft.Maui.Controls" />
+		<PackageReference Include="M.BindableProperty.Generator" Version="0.11.1" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 	</ItemGroup>
 
 	<ItemGroup>
