@@ -532,7 +532,10 @@ public class BottomSheetController
         {
             layoutParams.Height += TopInset;
         }
-        _sheet.Arrange(new Rect(0, 0, _frame.Width / density, height));
+
+        // PD: this seems to fix dynamic layout issues in Android...
+        //_sheet.Layout(new Rect(0, 0, _frame.Width / density, height));
+        //_sheet.Arrange(new Rect(0, 0, _frame.Width / density, height));
     }
 
     public void Show(bool animated)
