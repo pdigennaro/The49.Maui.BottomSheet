@@ -16,7 +16,7 @@
 		<VersionPrefix>8.0.3</VersionPrefix>
 		<VersionSuffix></VersionSuffix>
 
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
 
 		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
@@ -33,7 +33,7 @@
 		<Version>$(VersionPrefix)$(VersionSuffix)</Version>
 		<Company>The49 Ltd.</Company>
 
-		<MauiVersion>9.0.100</MauiVersion>
+		<MauiVersion>9.0.120</MauiVersion>
 	</PropertyGroup>
 
 
