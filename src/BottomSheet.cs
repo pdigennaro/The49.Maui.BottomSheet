@@ -135,17 +135,13 @@ public partial class BottomSheet : ContentView
     internal Detent? GetDefaultDetent()
     {
         var detents = GetEnabledDetents();
-        var detent = SelectedDetent;
-        if (SelectedDetent is not null)
-        {
-            return SelectedDetent;
-        }
         return detents.FirstOrDefault(d => d.IsDefault);
     }
 
     internal void NotifyDismissed()
     {
-        this.Parent.RemoveLogicalChild(this);
+        this.Parent?.RemoveLogicalChild(this);
+        SelectedDetent = null;
         Dismissed?.Invoke(this, _dismissOrigin);
     }
 

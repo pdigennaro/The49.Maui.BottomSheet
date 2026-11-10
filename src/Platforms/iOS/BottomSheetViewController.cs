@@ -96,7 +96,7 @@ public class BottomSheetViewController : UIViewController
         {
             return UISheetPresentationControllerDetentIdentifier.Large;
         }
-        else if (d is RatioDetent)
+        else if (d is RatioDetent ratioDetent && Math.Abs(ratioDetent.Ratio - 0.5) < 0.001)
         {
             return UISheetPresentationControllerDetentIdentifier.Medium;
         }
@@ -110,9 +110,29 @@ public class BottomSheetViewController : UIViewController
         {
             return;
         }
+        var pageDetents = _sheet.GetEnabledDetents().ToList();
+        var index = pageDetents.IndexOf(_sheet.SelectedDetent);
+        if (index == -1)
+        {
+            return;
+        }
+
+        var d = _sheet.SelectedDetent;
+
         SheetPresentationController.AnimateChanges(() =>
         {
-            SheetPresentationController.SelectedDetentIdentifier = GetIdentifierForDetent(_sheet.SelectedDetent);
+            if (d is FullscreenDetent)
+            {
+                SheetPresentationController.SelectedDetentIdentifier = UISheetPresentationControllerDetentIdentifier.Large;
+            }
+            else if (d is RatioDetent ratioDetent && Math.Abs(ratioDetent.Ratio - 0.5) < 0.001)
+            {
+                SheetPresentationController.SelectedDetentIdentifier = UISheetPresentationControllerDetentIdentifier.Medium;
+            }
+            else if (OperatingSystem.IsIOSVersionAtLeast(16))
+            {
+                SheetPresentationController.SetValueForKey(new NSString($"detent{index}"), new NSString("selectedDetentIdentifier"));
+            }
         });
     }
 
@@ -123,10 +143,24 @@ public class BottomSheetViewController : UIViewController
         {
             return null;
         }
-        var detents = _sheet.GetEnabledDetents();
+        var detents = _sheet.GetEnabledDetents().ToList();
+
+        if (OperatingSystem.IsIOSVersionAtLeast(16))
+        {
+            var currentId = SheetPresentationController.ValueForKey(new NSString("selectedDetentIdentifier")) as NSString;
+            if (currentId != null)
+            {
+                var idStr = currentId.ToString();
+                if (idStr.StartsWith("detent") && int.TryParse(idStr.Substring(6), out var idx) && idx >= 0 && idx < detents.Count)
+                {
+                    return detents[idx];
+                }
+            }
+        }
+
         return SheetPresentationController.SelectedDetentIdentifier switch
         {
-            UISheetPresentationControllerDetentIdentifier.Medium => detents.FirstOrDefault(d => d is RatioDetent ratioDetent && ratioDetent.Ratio == .5f),
+            UISheetPresentationControllerDetentIdentifier.Medium => detents.FirstOrDefault(d => d is RatioDetent ratioDetent && Math.Abs(ratioDetent.Ratio - 0.5) < 0.001),
             UISheetPresentationControllerDetentIdentifier.Large => detents.FirstOrDefault(d => d is FullscreenDetent),
             UISheetPresentationControllerDetentIdentifier.Unknown or _ => null,
         };

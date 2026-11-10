@@ -581,9 +581,8 @@ public class BottomSheetController
             Layout();
             UpdateBackground();
 
-            var state = GetStateForDetent(_sheet.SelectedDetent);
-
-            var defaultDetent = _sheet.GetDefaultDetent();
+            var targetDetent = _sheet.SelectedDetent ?? _sheet.GetDefaultDetent();
+            var state = targetDetent is not null ? GetStateForDetent(targetDetent) : -1;
             if (state is -1)
             {
                 state = Behavior.SkipCollapsed ? BottomSheetBehavior.StateExpanded : BottomSheetBehavior.StateCollapsed;

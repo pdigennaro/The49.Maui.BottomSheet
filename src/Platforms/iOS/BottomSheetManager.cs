@@ -86,7 +86,23 @@ internal partial class BottomSheetManager
             controller.SheetPresentationController.LargestUndimmedDetentIdentifier = largestDetentIdentifier;
         }
 
-        controller.SheetPresentationController.SelectedDetentIdentifier = BottomSheetViewController.GetIdentifierForDetent(sheet.SelectedDetent);
+        var selectedDetent = sheet.SelectedDetent ?? sheet.GetDefaultDetent();
+        if (selectedDetent is not null)
+        {
+            var selectedIndex = pageDetents.IndexOf(selectedDetent);
+            if (selectedDetent is FullscreenDetent)
+            {
+                controller.SheetPresentationController.SelectedDetentIdentifier = UISheetPresentationControllerDetentIdentifier.Large;
+            }
+            else if (selectedDetent is RatioDetent ratioDetent && Math.Abs(ratioDetent.Ratio - 0.5) < 0.001)
+            {
+                controller.SheetPresentationController.SelectedDetentIdentifier = UISheetPresentationControllerDetentIdentifier.Medium;
+            }
+            else if (selectedIndex >= 0 && OperatingSystem.IsIOSVersionAtLeast(16))
+            {
+                controller.SheetPresentationController.SetValueForKey(new NSString($"detent{selectedIndex}"), new NSString("selectedDetentIdentifier"));
+            }
+        }
 
         controller.ModalInPresentation = !sheet.IsCancelable;
 
